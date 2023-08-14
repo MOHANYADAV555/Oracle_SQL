@@ -1,0 +1,126 @@
+
+SQL> create table data(std_id number,m1 number,m2 number,m3 number);
+
+Table created.
+
+SQL> desc data;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ STD_ID                                             NUMBER
+ M1                                                 NUMBER
+ M2                                                 NUMBER
+ M3                                                 NUMBER
+
+SQL> alter table data add marks4 number;
+
+Table altered.
+
+SQL> desc data;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ STD_ID                                             NUMBER
+ M1                                                 NUMBER
+ M2                                                 NUMBER
+ M3                                                 NUMBER
+ MARKS4                                             NUMBER
+
+SQL> alter table data modify std_id char(10);
+
+Table altered.
+
+SQL> desc data;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ STD_ID                                             CHAR(10)
+ M1                                                 NUMBER
+ M2                                                 NUMBER
+ M3                                                 NUMBER
+ MARKS4                                             NUMBER
+
+SQL> alter table data rename column marks4 to m4;
+
+Table altered.
+
+SQL> desc data;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ STD_ID                                             CHAR(10)
+ M1                                                 NUMBER
+ M2                                                 NUMBER
+ M3                                                 NUMBER
+ M4                                                 NUMBER
+
+SQL> alter table data add dt varchar2;
+alter table data add dt varchar2
+                               *
+ERROR at line 1:
+ORA-00906: missing left parenthesis
+
+
+SQL> alter table data add dt varchar2(10);
+
+Table altered.
+
+SQL> desc data;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ STD_ID                                             CHAR(10)
+ M1                                                 NUMBER
+ M2                                                 NUMBER
+ M3                                                 NUMBER
+ M4                                                 NUMBER
+ DT                                                 VARCHAR2(10)
+
+SQL> drop column dt;
+drop column dt
+     *
+ERROR at line 1:
+ORA-00950: invalid DROP option
+
+
+SQL> drop alter table data drop column dt;
+drop alter table data drop column dt
+     *
+ERROR at line 1:
+ORA-00950: invalid DROP option
+
+
+SQL>  alter table data drop column dt; dt;
+ alter table data drop column dt; dt
+                                *
+ERROR at line 1:
+ORA-00933: SQL command not properly ended
+
+
+SQL>  alter table data drop column dt;
+
+Table altered.
+
+SQL> desc data;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ STD_ID                                             CHAR(10)
+ M1                                                 NUMBER
+ M2                                                 NUMBER
+ M3                                                 NUMBER
+ M4                                                 NUMBER
+
+SQL> alter table data rename to std_data;
+
+Table altered.
+
+SQL> desc data;
+ERROR:
+ORA-04043: object data does not exist
+
+
+SQL> desc std_data;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ STD_ID                                             CHAR(10)
+ M1                                                 NUMBER
+ M2                                                 NUMBER
+ M3                                                 NUMBER
+ M4                                                 NUMBER
+
+SQL>

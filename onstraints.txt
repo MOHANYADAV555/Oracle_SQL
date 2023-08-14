@@ -1,0 +1,264 @@
+
+SQL> create  table stu(sno number(5) primary key,
+  2  sname char(15) not null,
+  3  class char(10) check (class in ('ECE','CSE','CIVIL','MECH','MCA','MBA')));
+
+Table created.
+
+SQL> DESC STU;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SNO                                       NOT NULL NUMBER(5)
+ SNAME                                     NOT NULL CHAR(15)
+ CLASS                                              CHAR(10)
+
+SQL> alter table stu add(mob_no number(10) check ( mob_no > 6000000000));
+
+Table altered.
+
+SQL> alter table stu add(gmail varchar2(20) not null unique);
+
+Table altered.
+
+SQL> desc stu;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SNO                                       NOT NULL NUMBER(5)
+ SNAME                                     NOT NULL CHAR(15)
+ CLASS                                              CHAR(10)
+ MOB_NO                                             NUMBER(10)
+ GMAIL                                     NOT NULL VARCHAR2(20)
+
+SQL> insert into stu values(101,'ABC','CSE',6999999999,'abc@gmail.com');
+
+1 row created.
+
+SQL> insert into stu values(101,'ABC','CSE',6999999999,'abc@gmail.com');
+insert into stu values(101,'ABC','CSE',6999999999,'abc@gmail.com')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYSTEM.SYS_C008359) violated
+
+
+SQL> insert into stu values(102,'ABC','CSE',6999999999,'abc@gmail.com');
+insert into stu values(102,'ABC','CSE',6999999999,'abc@gmail.com')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYSTEM.SYS_C008362) violated
+
+
+SQL> insert into stu values(102,'ABC','CSE',6999999999,'abc@gmail');
+
+1 row created.
+
+SQL> insert into stu values(103,'','CSE',6999999999,'abc@gmail');
+insert into stu values(103,'','CSE',6999999999,'abc@gmail')
+                           *
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("SYSTEM"."STU"."SNAME")
+
+
+SQL> insert into stu values(103,' ','CSE',6999999999,'abc@gm');
+
+1 row created.
+
+SQL> insert into stu values(103,' ','CSE',699999999,'abc@gm');
+insert into stu values(103,' ','CSE',699999999,'abc@gm')
+*
+ERROR at line 1:
+ORA-02290: check constraint (SYSTEM.SYS_C008360) violated
+
+
+SQL> insert into stu values(103,' ','CSE',5699999999,'abc@gm');
+insert into stu values(103,' ','CSE',5699999999,'abc@gm')
+*
+ERROR at line 1:
+ORA-02290: check constraint (SYSTEM.SYS_C008360) violated
+
+
+SQL> insert into stu values(104,'xyz','mca',7699999999,'xyc@gmail.com');
+insert into stu values(104,'xyz','mca',7699999999,'xyc@gmail.com')
+*
+ERROR at line 1:
+ORA-02290: check constraint (SYSTEM.SYS_C008358) violated
+
+
+SQL> insert into stu values(104,'xyz','MCA',7699999999,'xyc@gmail.com');
+
+1 row created.
+
+SQL> insert into stu values(104,'xyz','MCA',7699999999,'');
+insert into stu values(104,'xyz','MCA',7699999999,'')
+                                                  *
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("SYSTEM"."STU"."GMAIL")
+
+
+SQL> create table exam(sno number(5) references stu(sno),
+  2  m1 number(3) check (m1 between 0 and 100),
+  3  m2 number(3) check (m2 between 0 and 100),
+  4  m3 number(3) check (m3 between 0 and 100),
+  5  ;
+
+*
+ERROR at line 5:
+ORA-00904: : invalid identifier
+
+
+SQL> create table exam(sno number(5) references stu(sno),
+  2  m1 number(3) check (m1 between 0 and 100),
+  3  m2 number(3) check (m2 between 0 and 100),
+  4  m3 number(3) check (m3 between 0 and 100);
+m3 number(3) check (m3 between 0 and 100)
+                                        *
+ERROR at line 4:
+ORA-00907: missing right parenthesis
+
+
+SQL> select * from stu;
+
+       SNO SNAME           CLASS          MOB_NO GMAIL
+---------- --------------- ---------- ---------- --------------------
+       101 ABC             CSE        6999999999 abc@gmail.com
+       102 ABC             CSE        6999999999 abc@gmail
+       103                 CSE        6999999999 abc@gm
+       104 xyz             MCA        7699999999 xyc@gmail.com
+
+SQL> create table exam(sno number(5) references stu(sno),
+  2  m1 number(3) check (m1 between 0 and 100),
+  3  m2 number(3) check (m2 between 0 and 100),
+  4  m3 number(3) check (m3 between 0 and 100));
+
+Table created.
+
+SQL> insert into exam values(1001,55,66,77);
+insert into exam values(1001,55,66,77)
+*
+ERROR at line 1:
+ORA-02291: integrity constraint (SYSTEM.SYS_C008366) violated - parent key not
+found
+
+
+SQL> insert into exam values(101,55,66,77);
+
+1 row created.
+
+SQL> select * from stu;
+
+       SNO SNAME           CLASS          MOB_NO GMAIL
+---------- --------------- ---------- ---------- --------------------
+       101 ABC             CSE        6999999999 abc@gmail.com
+       102 ABC             CSE        6999999999 abc@gmail
+       103                 CSE        6999999999 abc@gm
+       104 xyz             MCA        7699999999 xyc@gmail.com
+
+SQL> insert into exam values(102,75,76,77);
+
+1 row created.
+
+SQL> insert into exam values(104,75,76,77);
+
+1 row created.
+
+SQL> insert into exam values(104,75,76,77);
+
+1 row created.
+
+SQL> selectt * from exam;
+SP2-0734: unknown command beginning "selectt * ..." - rest of line ignored.
+SQL> select * from exam;
+
+       SNO         M1         M2         M3
+---------- ---------- ---------- ----------
+       101         55         66         77
+       102         75         76         77
+       104         75         76         77
+       104         75         76         77
+
+SQL> drop table exam;
+
+Table dropped.
+
+SQL> create table exam(sno number(5) references stu(sno),
+  2    2  m1 number(3) check (m1 between 0 and 100),
+  3    3  m2 number(3) check (m2 between 0 and 100),
+  4    4  m3 number(3) check (m3 between 0 and 100);
+  2  m1 number(3) check (m1 between 0 and 100),
+  *
+ERROR at line 2:
+ORA-00904: : invalid identifier
+
+
+SQL> create table exam(sno number(5) references stu(sno) on delete cascade,
+  2      m1 number(3) check (m1 between 0 and 100),
+  3      m2 number(3) check (m2 between 0 and 100),
+  4      m3 number(3) check (m3 between 0 and 100));
+
+Table created.
+
+SQL> insert into exam values(104,75,76,77);
+
+1 row created.
+
+SQL> insert into exam values(101,55,66,77);
+
+1 row created.
+
+SQL> select * from stu;
+
+       SNO SNAME           CLASS          MOB_NO GMAIL
+---------- --------------- ---------- ---------- --------------------
+       101 ABC             CSE        6999999999 abc@gmail.com
+       102 ABC             CSE        6999999999 abc@gmail
+       103                 CSE        6999999999 abc@gm
+       104 xyz             MCA        7699999999 xyc@gmail.com
+
+SQL> select * from exam;
+
+       SNO         M1         M2         M3
+---------- ---------- ---------- ----------
+       104         75         76         77
+       101         55         66         77
+
+SQL> delete from stu where sno=101;
+
+1 row deleted.
+
+SQL> select * from exam;
+
+       SNO         M1         M2         M3
+---------- ---------- ---------- ----------
+       104         75         76         77
+
+SQL> select * from stu;
+
+       SNO SNAME           CLASS          MOB_NO GMAIL
+---------- --------------- ---------- ---------- --------------------
+       102 ABC             CSE        6999999999 abc@gmail
+       103                 CSE        6999999999 abc@gm
+       104 xyz             MCA        7699999999 xyc@gmail.com
+
+SQL> insert into exam values(104,75,76,77);
+
+1 row created.
+
+SQL> select * from exam;
+
+       SNO         M1         M2         M3
+---------- ---------- ---------- ----------
+       104         75         76         77
+       104         75         76         77
+
+SQL> insert into exam values(104,75,76,77);
+
+1 row created.
+
+SQL> select * from exam;
+
+       SNO         M1         M2         M3
+---------- ---------- ---------- ----------
+       104         75         76         77
+       104         75         76         77
+       104         75         76         77
+
+SQL>
